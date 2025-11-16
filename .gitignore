@@ -1,0 +1,263 @@
+# ============================================
+# 농담 프로젝트 .gitignore
+# ============================================
+
+# ============================================
+# 환경 변수 및 민감한 정보
+# ============================================
+.env
+.env.local
+.env.*.local
+*.env
+
+# API Keys
+*_api_key*
+*_secret*
+credentials.json
+config.json
+
+# ============================================
+# Python
+# ============================================
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# Virtual environments
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+.venv/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*/.ipynb_checkpoints/*
+
+# pyenv
+.python-version
+
+# ============================================
+# 데이터 파일 (대용량)
+# ============================================
+# CSV 파일 (학습 데이터 제외하고 결과만)
+*_result.csv
+*_predicted*.csv
+test_comments_result.csv
+live_comments_result.csv
+
+# 대용량 데이터셋 (필요시 Git LFS 사용)
+*.csv
+!faq_data.json
+
+# 학습된 모델 파일
+*.pt
+*.pth
+*.h5
+*.pkl
+*.joblib
+model_epoch*.pt
+best_model/
+model_finetuned/
+
+# ============================================
+# Selenium & ChromeDriver
+# ============================================
+chromedriver
+chromedriver.exe
+geckodriver
+geckodriver.exe
+
+# ============================================
+# 이미지 및 미디어 파일
+# ============================================
+# 생성된 이미지
+generated_images/
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.bmp
+*.tiff
+*.webp
+
+# 단, 문서용 이미지는 포함 (포트폴리오)
+!서류/**/*.png
+!서류/**/*.jpg
+!포트폴리오/**/*.png
+!포트폴리오/**/*.jpg
+
+# 감정분류 시각화 결과 이미지 포함
+!감정분류/sentiment_plot.png
+!감정분류/type_plot.png
+
+# ============================================
+# 로그 및 임시 파일
+# ============================================
+*.log
+logs/
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# ============================================
+# OS 관련
+# ============================================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.Spotlight-V100
+.Trashes
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+.directory
+
+# ============================================
+# IDE 및 에디터
+# ============================================
+# VSCode
+.vscode/
+*.code-workspace
+
+# PyCharm
+.idea/
+*.iml
+*.iws
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+[._]*.s[a-v][a-z]
+[._]*.sw[a-p]
+[._]s[a-rt-v][a-z]
+[._]ss[a-gi-z]
+[._]sw[a-p]
+
+# ============================================
+# Gradio 관련
+# ============================================
+gradio_queue.db
+flagged/
+gradio_cached_examples/
+
+# ============================================
+# HuggingFace 관련
+# ============================================
+# 토크나이저 및 모델 파일 (대용량)
+감정분류/sentiment_classification/*.pt
+감정분류/sentiment_classification/*.pth
+감정분류/sentiment_classification/*.bin
+감정분류/sentiment_classification/pytorch_model.bin
+감정분류/sentiment_classification/model.safetensors
+
+# 단, config 파일은 포함
+!감정분류/sentiment_classification/config.json
+!감정분류/sentiment_classification/tokenizer_config.json
+!감정분류/sentiment_classification/special_tokens_map.json
+
+# ============================================
+# 데이터셋 파일
+# ============================================
+# KOTE 데이터셋 (대용량)
+감정분류/sentiment_classification/train.tsv
+감정분류/sentiment_classification/test.tsv
+감정분류/sentiment_classification/val.tsv
+감정분류/sentiment_classification/*.tsv
+
+# 댓글 데이터
+감정분류/comments.csv
+감정분류/sentiment_classification/only_comment.csv
+감정분류/live_comments_checkpoint.csv
+감정분류/failed_analysis.txt
+
+# ============================================
+# 프로젝트별 예외 (포함할 파일)
+# ============================================
+# FAQ 데이터는 포함
+!faq_data.json
+
+# 문서 파일은 포함
+!서류/**/*.md
+!서류/**/*.txt
+!포트폴리오/**/*.md
+
+# 학습 로그는 포함 (개인정보 없음)
+!감정분류/sentiment_classification/train_log.csv
+
+# ============================================
+# 기타
+# ============================================
+# 백업 파일
+*.bak
+*.backup
+*_backup/
+backup/
+
+# 압축 파일
+*.zip
+*.tar.gz
+*.rar
+*.7z
+
+# 노트
+notes/
+TODO.md
+NOTES.md
