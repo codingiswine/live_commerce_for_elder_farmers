@@ -131,7 +131,12 @@ generated_images/
 !포트폴리오/**/*.png
 !포트폴리오/**/*.jpg
 
+# README용 데모 이미지 포함
+!live_commerce1.png
+!live_commerce2.png
+
 # 감정분류 시각화 결과 이미지 포함
+!감정분류/emotion_classification.png
 !감정분류/sentiment_plot.png
 !감정분류/type_plot.png
 
