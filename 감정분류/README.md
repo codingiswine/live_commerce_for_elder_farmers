@@ -57,8 +57,8 @@
 - 네이버 쇼핑라이브 실시간 댓글 감정 분석
 
 ### 성능
-- **F1 Score**: 0.6105 (Epoch 8)
-- **개선도**: 사전학습 모델 (0.0166) → 파인튜닝 후 (0.6105) *약 36배 향상*
+- **F1 Score**: 학습 중 최고 validation F1 0.6105 (Epoch 8, multi-label threshold 기준)
+- **개선도**: 동일 평가 기준(test set, single-label) 사전학습 모델 F1 0.0166 → 파인튜닝 후 0.2196 *(약 13배 향상)*
 
 ---
 
@@ -294,10 +294,12 @@ optimizer = torch.optim.AdamW(model.parameters(), lr=LEARNING_RATE)
 
 ## 📈 성능 비교
 
-| 모델 | F1 Score (Micro) | 비고 |
+| 모델 | F1 Score (Micro, test set·single-label) | 비고 |
 |-----|-----------------|------|
 | snunlp/KR-ELECTRA (사전학습) | 0.0166 | 베이스라인 |
-| **파인튜닝 모델 (Epoch 8)** | **0.6105** | **약 36배 향상** ⭐ |
+| **파인튜닝 모델 (Epoch 8)** | **0.2196** | **약 13배 향상** ⭐ |
+
+> 참고: 학습 중 validation set에서 multi-label threshold(0.5) 기준으로 측정한 최고 F1은 0.6105(Epoch 8)입니다. 위 표는 사전학습 모델과 동일한 평가 방식(test set·single-label)으로 비교한 수치입니다.
 
 ---
 
