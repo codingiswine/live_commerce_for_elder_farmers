@@ -141,8 +141,8 @@ cd 감정분류/sentiment_classification
 ### 주요 성능
 - **모델**: KoELECTRA (snunlp/KR-ELECTRA-discriminator)
 - **Task**: 44개 감정 클래스 멀티라벨 분류
-- **성능**: F1 Score 0.6105 (Epoch 8)
-- **개선도**: 사전학습 모델 (0.0166) → 파인튜닝 후 (0.6105) *약 36배 향상*
+- **성능**: 학습 중 최고 validation F1 Score 0.6105 (Epoch 8, multi-label threshold 기준)
+- **개선도**: 동일 평가 기준(test set, single-label) 사전학습 모델 F1 0.0166 → 파인튜닝 후 0.2196 *(약 13배 향상)*
 
 ### 학습 설정
 ```python
@@ -200,8 +200,8 @@ LangChain 프롬프트 기반 감정 분석 (긍정/부정/중립 + 유형 + 요
 - CS 업무 자동화로 **운영 효율 향상 및 비용 절감** 기대
 
 ### ✅ 감정분류 프로젝트
-- KoELECTRA 44개 감정 클래스 파인튜닝 **F1 Score 0.61** 달성
-- 사전학습 모델 대비 **약 36배 성능 향상**
+- KoELECTRA 44개 감정 클래스 파인튜닝, 학습 중 최고 validation F1 Score 0.61 달성
+- 동일 평가 기준 사전학습 모델 대비 **약 13배 성능 향상** (F1 0.0166 → 0.2196)
 - Early Stopping, Learning Rate 튜닝 적용
 - 감정별 분포 시각화 완료
 
