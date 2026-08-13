@@ -49,6 +49,10 @@
 
 ## 🏗️ 프로젝트 구조
 
+<div align="center">
+  <img src="architecture.svg" alt="농담 전체 아키텍처" width="900">
+</div>
+
 ```
 농담/
 │
