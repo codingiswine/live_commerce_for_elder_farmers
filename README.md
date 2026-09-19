@@ -68,7 +68,7 @@
 │   ├── comment.py             # Selenium 댓글 수집
 │   ├── 1analyze-sentiment.py # LangChain 감정 분석
 │   ├── sentiment_classification/
-│   │   └── train.ipynb        # KoELECTRA 파인튜닝
+│   │   └── train.ipynb        # KR-ELECTRA 파인튜닝
 │   ├── sentiment_plot.png     # 감정별 분포
 │   └── type_plot.png          # 유형별 분포
 │
@@ -127,7 +127,7 @@ python 3poc_web_app.py
 
 ## 🧠 감정분류 프로젝트
 
-### KoELECTRA 파인튜닝
+### KR-ELECTRA 파인튜닝
 
 ```bash
 cd 감정분류/sentiment_classification
@@ -137,7 +137,7 @@ cd 감정분류/sentiment_classification
 ```
 
 ### 주요 성능
-- **모델**: KoELECTRA (snunlp/KR-ELECTRA-discriminator)
+- **모델**: KR-ELECTRA (snunlp/KR-ELECTRA-discriminator)
 - **Task**: 44개 감정 클래스 멀티라벨 분류
 - **성능**: 학습 중 최고 validation F1 Score 0.6105 (Epoch 8, multi-label threshold 기준)
 - **개선도**: 동일 평가 기준(test set, single-label) 사전학습 모델 F1 0.0166 → 파인튜닝 후 0.2196 *(약 13배 향상)*
@@ -174,7 +174,7 @@ LangChain 프롬프트 기반 감정 분석 (긍정/부정/중립 + 유형 + 요
 - **OpenAI API**: GPT-4o, DALL·E 3
 - **LangChain**: 프롬프트 엔지니어링
 - **PyTorch**: 모델 학습
-- **HuggingFace Transformers**: KoELECTRA 파인튜닝
+- **HuggingFace Transformers**: KR-ELECTRA 파인튜닝
 
 ### 데이터 처리
 - **Pandas**: 데이터 전처리
@@ -198,7 +198,7 @@ LangChain 프롬프트 기반 감정 분석 (긍정/부정/중립 + 유형 + 요
 - CS 업무 자동화로 **운영 효율 향상 및 비용 절감** 기대
 
 ### ✅ 감정분류 프로젝트
-- KoELECTRA 44개 감정 클래스 파인튜닝, 학습 중 최고 validation F1 Score 0.61 달성
+- KR-ELECTRA 44개 감정 클래스 파인튜닝, 학습 중 최고 validation F1 Score 0.61 달성
 - 동일 평가 기준 사전학습 모델 대비 **약 13배 성능 향상** (F1 0.0166 → 0.2196)
 - Early Stopping, Learning Rate 튜닝 적용
 - 감정별 분포 시각화 완료
@@ -224,7 +224,7 @@ LangChain 프롬프트 기반 감정 분석 (긍정/부정/중립 + 유형 + 요
 
 ### 열매컴퍼니 (미술품 투자 플랫폼)
 - **DALL·E 3** → 미술품 이미지 자동 생성 및 분석
-- **KoELECTRA 파인튜닝** → 투자자 리뷰 감정 분석
+- **KR-ELECTRA 파인튜닝** → 투자자 리뷰 감정 분석
 - **Vision AI** → 작품 특징(화풍, 색감, 구도) 자동 추출
 - **GPT-4o** → 작품 설명 자동 생성
 
