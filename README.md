@@ -140,7 +140,7 @@ cd 감정분류/sentiment_classification
 - **모델**: KR-ELECTRA (snunlp/KR-ELECTRA-discriminator)
 - **Task**: 44개 감정 클래스 멀티라벨 분류
 - **성능**: 학습 중 최고 validation F1 Score 0.6105 (Epoch 8, multi-label threshold 기준)
-- **개선도**: 동일 평가 기준(test set, single-label) 사전학습 모델 F1 0.0166 → 파인튜닝 후 0.2196 *(약 13배 향상)*
+- **참고**: 파인튜닝 전 사전학습 모델은 같은 test set에서 F1 0.0166 — 분류 헤드가 학습되지 않은 무작위 수준이라, 0.0166 → 0.2196을 성능 향상 배수로 환산하지 않는다
 
 ### 학습 설정
 ```python
@@ -199,7 +199,7 @@ LangChain 프롬프트 기반 감정 분석 (긍정/부정/중립 + 유형 + 요
 
 ### ✅ 감정분류 프로젝트
 - KR-ELECTRA 44개 감정 클래스 파인튜닝, 학습 중 최고 validation F1 Score 0.61 달성
-- 동일 평가 기준 사전학습 모델 대비 **약 13배 성능 향상** (F1 0.0166 → 0.2196)
+- 사전학습 모델 그대로의 F1 0.0166은 분류 헤드 미학습 상태의 무작위 수준이라 향상 배수의 기준으로 쓰지 않음
 - Early Stopping, Learning Rate 튜닝 적용
 - 감정별 분포 시각화 완료
 
