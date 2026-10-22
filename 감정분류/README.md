@@ -1,6 +1,6 @@
 # 🎭 감정분류 프로젝트
 
-> KoELECTRA 기반 한국어 감정 분석 시스템
+> KR-ELECTRA 기반 한국어 감정 분석 시스템
 > 44개 감정 클래스 멀티라벨 분류 파인튜닝
 
 ## 📸 프로젝트 데모
@@ -53,12 +53,12 @@
 
 ### 목표
 - 44개 감정 클래스 멀티라벨 분류
-- KoELECTRA 기반 한국어 감정 분석 모델 파인튜닝
+- KR-ELECTRA 기반 한국어 감정 분석 모델 파인튜닝
 - 네이버 쇼핑라이브 실시간 댓글 감정 분석
 
 ### 성능
 - **F1 Score**: 학습 중 최고 validation F1 0.6105 (Epoch 8, multi-label threshold 기준)
-- **개선도**: 동일 평가 기준(test set, single-label) 사전학습 모델 F1 0.0166 → 파인튜닝 후 0.2196 *(약 13배 향상)*
+- **참고**: 동일 평가 기준(test set, single-label) 사전학습 모델 F1 0.0166 → 파인튜닝 후 0.2196. 사전학습 모델의 0.0166은 분류 헤드가 학습되지 않은 무작위 수준이라, 이 차이를 성능 향상 배수로 환산하지 않는다
 
 ---
 
@@ -71,7 +71,7 @@
 ├── 2analyze-sentiment-graph.py   # 감정 분포 시각화
 ├── test.py                       # CSV 파일 검증 스크립트
 │
-├── sentiment_classification/     # KoELECTRA 파인튜닝
+├── sentiment_classification/     # KR-ELECTRA 파인튜닝
 │   ├── train.ipynb              # 학습 노트북 (Google Colab)
 │   ├── config.json              # 모델 설정
 │   ├── tokenizer_config.json    # 토크나이저 설정
@@ -92,7 +92,7 @@
 
 **📁 학습 데이터 (저장소 제외):**
 - `train.tsv`, `val.tsv`, `test.tsv` - AI Hub에서 다운로드 필요
-- KoELECTRA 파인튜닝 재현 시에만 필요
+- KR-ELECTRA 파인튜닝 재현 시에만 필요
 
 ---
 
@@ -160,7 +160,7 @@ python 1analyze-sentiment.py --input comments_20250116_140530.csv
 - OpenAI API 키가 `.env` 파일에 설정되어 있어야 함
 - `comments.csv` 또는 `--input`으로 지정한 CSV 파일이 존재해야 함
 
-### 4. KoELECTRA 파인튜닝
+### 4. KR-ELECTRA 파인튜닝
 
 ```bash
 cd sentiment_classification
@@ -188,7 +188,7 @@ python 2analyze-sentiment-graph.py
 
 ## 🧠 모델 아키텍처
 
-### KoELECTRA 파인튜닝
+### KR-ELECTRA 파인튜닝
 
 ```python
 # 베이스 모델
@@ -212,7 +212,7 @@ optimizer = torch.optim.AdamW(model.parameters(), lr=LEARNING_RATE)
 ### 학습 과정
 
 1. **데이터 로드**: KOTE 데이터셋 (train: 40,000 / val: 5,000 / test: 5,000)
-2. **토큰화**: KoELECTRA 토크나이저 (Max Length: 128)
+2. **토큰화**: KR-ELECTRA 토크나이저 (Max Length: 128)
 3. **학습**: 10 Epochs (Early Stopping)
 4. **평가**: F1 Score (Micro Averaging)
 
@@ -297,7 +297,7 @@ optimizer = torch.optim.AdamW(model.parameters(), lr=LEARNING_RATE)
 | 모델 | F1 Score (Micro, test set·single-label) | 비고 |
 |-----|-----------------|------|
 | snunlp/KR-ELECTRA (사전학습) | 0.0166 | 베이스라인 |
-| **파인튜닝 모델 (Epoch 8)** | **0.2196** | **약 13배 향상** ⭐ |
+| **파인튜닝 모델 (Epoch 8)** | **0.2196** | 베이스라인은 분류 헤드 미학습 상태라 향상 배수로 환산하지 않음 |
 
 > 참고: 학습 중 validation set에서 multi-label threshold(0.5) 기준으로 측정한 최고 F1은 0.6105(Epoch 8)입니다. 위 표는 사전학습 모델과 동일한 평가 방식(test set·single-label)으로 비교한 수치입니다.
 
@@ -342,7 +342,7 @@ optimizer = torch.optim.AdamW(model.parameters(), lr=LEARNING_RATE)
 
 ## 🙏 참고 자료
 
-- **KoELECTRA**: [https://github.com/snunlp/KR-ELECTRA](https://github.com/snunlp/KR-ELECTRA)
+- **KR-ELECTRA**: [https://github.com/snunlp/KR-ELECTRA](https://github.com/snunlp/KR-ELECTRA)
 - **KOTE Dataset**: AI Hub 한국어 감정 정보가 포함된 단발성 대화 데이터셋
 - **HuggingFace Transformers**: [https://huggingface.co/docs/transformers](https://huggingface.co/docs/transformers)
 - **PyTorch**: [https://pytorch.org/](https://pytorch.org/)
