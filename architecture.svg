@@ -69,7 +69,7 @@
   <line x1="580" y1="457" x2="610" y2="457" stroke="#9333ea" stroke-width="1.6" marker-end="url(#ar)"/>
 
   <rect x="610" y="425" width="280" height="65" rx="7" fill="#ffffff" stroke="#d8b4fe" stroke-width="1.3"/>
-  <text x="750" y="448" text-anchor="middle" font-size="11.5" font-weight="600" fill="#0f172a">validation micro-F1 0.6105 (Epoch 8, 44클래스 멀티라벨)</text>
+  <text x="750" y="448" text-anchor="middle" font-size="11.5" font-weight="600" fill="#0f172a">validation micro-F1 0.6105 (Epoch 8, logit &gt; 0.5 기준)</text>
   <text x="750" y="465" text-anchor="middle" font-size="10" fill="#64748b">Early Stopping(patience=3) 설정 · 10 epoch 내 미발동</text>
   <text x="750" y="480" text-anchor="middle" font-size="9.5" fill="#9333ea">※ 사전학습 모델 그대로는 F1 0.0166(무작위 수준) — 분류 헤드가 미학습 상태라 성과 비교 대상 아님</text>
 
