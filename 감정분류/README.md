@@ -15,13 +15,13 @@
 
 본 프로젝트에서 사용된 데이터는 다음과 같습니다:
 
-#### 1. KOTE 데이터셋 (Korean Opinion and Emotion Dataset)
-- **출처**: AI Hub 한국어 감정 정보가 포함된 단발성 대화 데이터셋
-- **라이선스**: AI Hub 공개 데이터셋 이용약관 준수
+#### 1. KOTE 데이터셋 (Korean Online That-gul Emotions)
+- **출처**: [https://github.com/searle-j/KOTE](https://github.com/searle-j/KOTE) (44개 감정 라벨 멀티라벨 데이터셋)
+- **라이선스**: 원 저장소의 이용 조건 참조
 - **사용 목적**: 학습 및 연구 목적 (포트폴리오)
 - **포함 데이터**: `train.tsv`, `test.tsv`, `val.tsv` (총 50,000개 샘플)
 
-#### 2. 댓글 데이터 (comments.csv)
+#### 2. 댓글 데이터 (comments_YYYYMMDD_HHMMSS.csv)
 - **출처**: 네이버 쇼핑라이브 공개 댓글
 - **사용 목적**: 실습 및 PoC (Proof of Concept)
 - **개인정보 처리**: 모든 개인 식별 정보 제거됨
@@ -57,8 +57,8 @@
 - 네이버 쇼핑라이브 실시간 댓글 감정 분석
 
 ### 성능
-- **F1 Score**: 학습 중 최고 validation F1 0.6105 (Epoch 8, multi-label threshold 기준)
-- **참고**: 동일 평가 기준(test set, single-label) 사전학습 모델 F1 0.0166 → 파인튜닝 후 0.2196. 사전학습 모델의 0.0166은 분류 헤드가 학습되지 않은 무작위 수준이라, 이 차이를 성능 향상 배수로 환산하지 않는다
+- **F1 Score**: 학습 중 최고 validation F1 0.6105 (Epoch 8, multi-label, logit > 0.5 기준(시그모이드 확률 약 0.62))
+- **참고**: 동일 평가 기준(test set, single-label — argmax 1개 vs 첫 번째 정답 라벨) 사전학습 모델 F1 0.0166 → 파인튜닝 후 0.2196. 위 validation multi-label F1 0.6105와는 다른 평가 방식이다. 사전학습 모델의 0.0166은 분류 헤드가 학습되지 않은 무작위 수준이라, 이 차이를 성능 향상 배수로 환산하지 않는다
 
 ---
 
@@ -78,7 +78,7 @@
 │   ├── special_tokens_map.json  # 특수 토큰
 │   ├── tokenizer.json           # 토크나이저
 │   ├── vocab.txt                # 어휘 사전
-│   └── train_log.csv            # 학습 로그 (epoch, loss, f1)
+│   └── train_log.csv            # 학습 로그 — 마지막 epoch 기록만 포함 (epoch별 값은 train.ipynb 출력 참조)
 │
 ├── sentiment_plot.png            # 감정별 분포 (시각화 결과)
 ├── type_plot.png                 # 유형별 분포 (시각화 결과)
@@ -86,12 +86,12 @@
 ```
 
 **📁 사용자가 직접 생성하는 파일:**
-- `comments.csv` - comment.py 실행 시 생성 (개인정보 보호로 저장소 제외)
+- `comments_YYYYMMDD_HHMMSS.csv` - comment.py 실행 시 생성 (개인정보 보호로 저장소 제외)
 - `live_comments_result.csv` - 1analyze-sentiment.py 실행 시 생성
 - `chromedriver` - 시스템 PATH에 설치 (brew install chromedriver 권장)
 
 **📁 학습 데이터 (저장소 제외):**
-- `train.tsv`, `val.tsv`, `test.tsv` - AI Hub에서 다운로드 필요
+- `train.tsv`, `val.tsv`, `test.tsv` - KOTE 저장소(https://github.com/searle-j/KOTE)에서 다운로드 필요
 - KR-ELECTRA 파인튜닝 재현 시에만 필요
 
 ---
@@ -163,11 +163,9 @@ python 1analyze-sentiment.py --input comments_20250116_140530.csv
 ### 4. KR-ELECTRA 파인튜닝
 
 ```bash
-cd sentiment_classification
-
-# Google Colab에서 train.ipynb 실행
-# 또는 Jupyter Notebook에서 실행
-jupyter notebook train.ipynb
+# train.ipynb는 Google Colab 전용 (google.colab drive.mount, apt-get,
+# DATA_DIR=/content/drive/... 경로 사용) — 로컬 Jupyter에서는 그대로 실행되지 않음
+# sentiment_classification/train.ipynb를 Colab에서 열어 실행
 ```
 
 ### 5. 감정 분포 시각화
@@ -198,7 +196,7 @@ model_name = "snunlp/KR-ELECTRA-discriminator"
 BATCH_SIZE = 16
 EPOCHS = 10
 LEARNING_RATE = 2e-5
-PATIENCE = 3  # Early Stopping
+PATIENCE = 3  # Early Stopping (10 epoch 내 미발동)
 NUM_LABELS = 44  # 멀티라벨 분류
 MAX_LENGTH = 128
 
@@ -213,7 +211,7 @@ optimizer = torch.optim.AdamW(model.parameters(), lr=LEARNING_RATE)
 
 1. **데이터 로드**: KOTE 데이터셋 (train: 40,000 / val: 5,000 / test: 5,000)
 2. **토큰화**: KR-ELECTRA 토크나이저 (Max Length: 128)
-3. **학습**: 10 Epochs (Early Stopping)
+3. **학습**: 10 Epochs — Early Stopping(patience=3) 설정, 10 epoch 내 미발동(카운터 최대 2/3), 최고 성능(Epoch 8) 체크포인트 저장. LR 2e-5 고정 (스케줄러·튜닝 없음)
 4. **평가**: F1 Score (Micro Averaging)
 
 ### 학습 결과
@@ -223,10 +221,13 @@ optimizer = torch.optim.AdamW(model.parameters(), lr=LEARNING_RATE)
 | 1 | 0.3406 | 0.4873 |
 | 2 | 0.2852 | 0.5428 |
 | 3 | 0.2642 | 0.5812 |
+| 4 | 0.2481 | 0.5695 |
 | 5 | 0.2335 | 0.5837 |
 | 6 | 0.2191 | 0.6022 |
 | 7 | 0.2055 | 0.6055 |
 | **8** | **0.1932** | **0.6105** ⭐ |
+| 9 | 0.1814 | 0.6104 |
+| 10 | 0.1706 | 0.6011 |
 
 **Best Model: Epoch 8 (F1 Score: 0.6105)**
 
@@ -236,16 +237,13 @@ optimizer = torch.optim.AdamW(model.parameters(), lr=LEARNING_RATE)
 
 ### 44개 감정 클래스
 
-감정은 다음 3가지 그룹으로 분류됩니다:
+모델 출력은 인덱스 0~43의 44개 라벨입니다 (`config.json`에는 `LABEL_0`~`LABEL_43`으로만 저장, 감정명 매핑은 저장소에 없음). 각 인덱스의 감정 정의는 KOTE 데이터셋 원 저장소([https://github.com/searle-j/KOTE](https://github.com/searle-j/KOTE))의 라벨 정의를 따릅니다.
 
-#### 🟢 긍정 감정 (12개)
-- 기쁨, 사랑, 감동, 기대, 만족, 신뢰, 편안함, 자신감, 흥미, 활력, 감사, 희망
+`train.ipynb`의 댓글 예측 단계에서는 44개 인덱스를 3개 그룹으로 묶어 댓글별 요약 감정을 산출합니다 (학습·평가에는 사용하지 않고, 댓글 예측 요약에만 사용):
 
-#### 🔴 부정 감정 (16개)
-- 분노, 슬픔, 불안, 좌절, 두려움, 혐오, 질투, 창피, 후회, 실망, 짜증, 우울, 스트레스, 무력감, 죄책감, 고통
-
-#### ⚪ 중립 감정 (16개)
-- 놀람, 의심, 혼란, 무관심, 외로움, 그리움, 피곤, 지루함, 평온, 호기심, 긴장, 안도, 공감, 부끄러움, 당황, 동정
+- 🟢 **긍정 (12개 인덱스)**: `positive_idx = [1, 2, 4, 8, 14, 15, 16, 19, 33, 41, 42, 43]`
+- 🔴 **부정 (16개 인덱스)**: `negative_idx = [0, 3, 5, 6, 10, 12, 20, 21, 22, 23, 25, 26, 27, 36, 38, 40]`
+- ⚪ **중립 (16개 인덱스)**: `neutral_idx = [7, 9, 11, 13, 17, 18, 24, 28, 29, 30, 31, 32, 34, 35, 37, 39]`
 
 ---
 
@@ -271,9 +269,9 @@ optimizer = torch.optim.AdamW(model.parameters(), lr=LEARNING_RATE)
 ## 🛠️ 기술 스택
 
 ### ML/DL
-- **PyTorch**: 1.13.0+
+- **PyTorch**: ~=2.1 (requirements.txt 기준)
 - **Transformers**: 4.40.2
-- **HuggingFace**: Tokenizer, Trainer
+- **HuggingFace**: AutoTokenizer, AutoModelForSequenceClassification (커스텀 PyTorch 학습 루프)
 
 ### 데이터 처리
 - **Pandas**: 데이터 전처리
@@ -299,7 +297,7 @@ optimizer = torch.optim.AdamW(model.parameters(), lr=LEARNING_RATE)
 | snunlp/KR-ELECTRA (사전학습) | 0.0166 | 베이스라인 |
 | **파인튜닝 모델 (Epoch 8)** | **0.2196** | 베이스라인은 분류 헤드 미학습 상태라 향상 배수로 환산하지 않음 |
 
-> 참고: 학습 중 validation set에서 multi-label threshold(0.5) 기준으로 측정한 최고 F1은 0.6105(Epoch 8)입니다. 위 표는 사전학습 모델과 동일한 평가 방식(test set·single-label)으로 비교한 수치입니다.
+> 참고: 학습 중 validation set에서 multi-label, logit > 0.5 기준(시그모이드 확률 약 0.62)으로 측정한 최고 F1은 0.6105(Epoch 8)입니다. 위 표는 사전학습 모델과 동일한 평가 방식(test set·single-label)으로 비교한 수치입니다.
 
 ---
 
@@ -316,11 +314,10 @@ optimizer = torch.optim.AdamW(model.parameters(), lr=LEARNING_RATE)
 ## 📝 라이선스 및 저작권
 
 ### 코드
-- **라이선스**: MIT License (본 프로젝트 코드)
-- **재사용**: 자유롭게 사용 가능 (출처 표기 권장)
+- **라이선스**: 별도 LICENSE 파일 없음
 
 ### 데이터
-- **KOTE 데이터셋**: AI Hub 이용약관 준수
+- **KOTE 데이터셋**: 원 저장소(https://github.com/searle-j/KOTE)의 이용 조건 참조
 - **댓글 데이터**: 예시 데이터로만 사용 (상업적 사용 불가)
 - **재배포 금지**: 원본 데이터 재배포 불가
 
@@ -343,6 +340,6 @@ optimizer = torch.optim.AdamW(model.parameters(), lr=LEARNING_RATE)
 ## 🙏 참고 자료
 
 - **KR-ELECTRA**: [https://github.com/snunlp/KR-ELECTRA](https://github.com/snunlp/KR-ELECTRA)
-- **KOTE Dataset**: AI Hub 한국어 감정 정보가 포함된 단발성 대화 데이터셋
+- **KOTE (Korean Online That-gul Emotions) Dataset**: [https://github.com/searle-j/KOTE](https://github.com/searle-j/KOTE)
 - **HuggingFace Transformers**: [https://huggingface.co/docs/transformers](https://huggingface.co/docs/transformers)
 - **PyTorch**: [https://pytorch.org/](https://pytorch.org/)

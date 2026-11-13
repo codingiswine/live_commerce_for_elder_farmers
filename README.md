@@ -34,11 +34,11 @@
 - 농부의 따뜻하고 신뢰감 있는 말투로 상품 설명 작성
 
 ### 3️⃣ 리뷰 분석 Agent
-- 감성 분석으로 사용자 피드백 요약
-- 긍정/부정/중립 자동 분류 및 키워드 추출
+- 고객 리뷰 감정 분석
+- 긍정/부정/중립 자동 분류 및 핵심 키워드 2~3개 추출
 
 ### 4️⃣ 라벨 생성 Agent
-- 제품 설명 기반 홍보 문구 자동 생성
+- 상품명·농부명·지역·특징 기반 홍보 문구 자동 생성
 - 1~2줄 감성 문구 생성
 
 ### 5️⃣ FAQ 챗봇 Agent
@@ -130,29 +130,29 @@ python 3poc_web_app.py
 ### KR-ELECTRA 파인튜닝
 
 ```bash
-cd 감정분류/sentiment_classification
-
-# Jupyter Notebook에서 train.ipynb 실행
-# 또는 Google Colab에서 실행
+# train.ipynb는 Google Colab 전용 (google.colab drive.mount, apt-get,
+# DATA_DIR=/content/drive/... 경로 사용) — 로컬 Jupyter에서는 그대로 실행되지 않음
+# 감정분류/sentiment_classification/train.ipynb를 Colab에서 열어 실행
 ```
 
 ### 주요 성능
 - **모델**: KR-ELECTRA (snunlp/KR-ELECTRA-discriminator)
 - **Task**: 44개 감정 클래스 멀티라벨 분류
-- **성능**: 학습 중 최고 validation F1 Score 0.6105 (Epoch 8, multi-label threshold 기준)
-- **참고**: 파인튜닝 전 사전학습 모델은 같은 test set에서 F1 0.0166 — 분류 헤드가 학습되지 않은 무작위 수준이라, 0.0166 → 0.2196을 성능 향상 배수로 환산하지 않는다
+- **성능**: 학습 중 최고 validation F1 Score 0.6105 (Epoch 8, multi-label, logit > 0.5 기준(시그모이드 확률 약 0.62))
+- **참고**: 파인튜닝 전 사전학습 모델은 같은 test set에서 F1 0.0166 — 분류 헤드가 학습되지 않은 무작위 수준이라, 0.0166 → 0.2196을 성능 향상 배수로 환산하지 않는다. 0.2196은 test set·single-label 평가(argmax 1개 vs 첫 번째 정답 라벨)로, validation multi-label F1 0.6105와는 다른 평가 방식
 
 ### 학습 설정
 ```python
 BATCH_SIZE = 16
 EPOCHS = 10
 LEARNING_RATE = 2e-5
-PATIENCE = 3  # Early Stopping
+PATIENCE = 3  # Early Stopping (10 epoch 내 미발동)
 ```
 
 ### 댓글 수집 (Selenium)
 
 ```bash
+cd 감정분류
 python comment.py
 ```
 
@@ -161,10 +161,11 @@ python comment.py
 ### 감정 분석 (LangChain)
 
 ```bash
+cd 감정분류
 python 1analyze-sentiment.py
 ```
 
-LangChain 프롬프트 기반 감정 분석 (긍정/부정/중립 + 유형 + 요약)
+LangChain 프롬프트 기반 감정 분석 (5단계 감정: 매우 긍정~매우 부정 + 유형 + 요약)
 
 ---
 
@@ -198,9 +199,9 @@ LangChain 프롬프트 기반 감정 분석 (긍정/부정/중립 + 유형 + 요
 - CS 업무 자동화로 **운영 효율 향상 및 비용 절감** 기대
 
 ### ✅ 감정분류 프로젝트
-- KR-ELECTRA 44개 감정 클래스 파인튜닝, 학습 중 최고 validation F1 Score 0.61 달성
+- KR-ELECTRA 44개 감정 클래스 파인튜닝, 학습 중 최고 validation F1 Score 0.61 달성 (multi-label, logit > 0.5 기준(시그모이드 확률 약 0.62))
 - 사전학습 모델 그대로의 F1 0.0166은 분류 헤드 미학습 상태의 무작위 수준이라 향상 배수의 기준으로 쓰지 않음
-- Early Stopping, Learning Rate 튜닝 적용
+- Early Stopping(patience=3) 설정 — 10 epoch 내 미발동, 최고 성능(Epoch 8) 체크포인트 저장. LR 2e-5 고정
 - 감정별 분포 시각화 완료
 
 ---
